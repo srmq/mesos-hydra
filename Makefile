@@ -1,9 +1,6 @@
 all: upload
 
-.PHONY: package upload download_egg
-
-download_egg:
-	wget https://s3.amazonaws.com/downloads.mesosphere.io/master/ubuntu/13.10/mesos_0.16.0_amd64.egg
+.PHONY: package upload
 
 upload: package example
 	hadoop fs -rm -f -r hdfs://$(HDFS_NAME_NODE)/hydra

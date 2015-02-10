@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-import mesos
-import mesos_pb2
+#import mesos
+import mesos.interface 
+import mesos.native
+from mesos.interface import mesos_pb2
+
 
 import os
 import logging
@@ -68,7 +71,7 @@ def finalizeSlaves(callbacks):
 
   logging.info("Done finalizing slaves")
 
-class HydraScheduler(mesos.Scheduler):
+class HydraScheduler(mesos.interface.Scheduler):
 
   def __init__(self, options):
     self.proxiesLaunched = 0
@@ -144,7 +147,7 @@ class HydraScheduler(mesos.Scheduler):
         executable_uri = task.command.uris.add()
         executable_uri.value = "hdfs://" + name_node + "/hydra/" + mpi_program[0]
 
-        task.command.value = "python hydra-proxy.py %d" % port
+        task.command.value = "bin/run.sh " + mpi_program[0] + " python hydra-proxy.py %d" % port
 
         tasks.append(task)
 
@@ -250,7 +253,7 @@ if __name__ == "__main__":
   
   work_dir = tempfile.mkdtemp()
 
-  driver = mesos.MesosSchedulerDriver(
+  driver = mesos.native.MesosSchedulerDriver(
     scheduler,
     framework,
     args[0])
